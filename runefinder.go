@@ -167,7 +167,7 @@ func getIndex(saved chan<- bool) (index RuneIndex) {
 	return index
 }
 
-func findRunes(query []string, index RuneIndex) RuneSlice {
+func (index RuneIndex) Find(query []string) RuneSlice {
 	commonRunes := RuneSet{}
 	for i, word := range query {
 		word = strings.ToUpper(word)
@@ -186,6 +186,10 @@ func findRunes(query []string, index RuneIndex) RuneSlice {
 	return result
 }
 
+func (index RuneIndex) Name(uchar rune) string {
+	return index.Names[uchar]
+}
+
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Usage:  runefinder <word>\texample: runefinder cat")
@@ -194,15 +198,15 @@ func main() {
 
 	words := os.Args[1:]
 	saved := make(chan bool)
-	index := getIndex(saved)
+	runeIndex := getIndex(saved)
 	count := 0
 	format := "U+%04X  %c \t%s\n"
 
-	for _, uchar := range findRunes(words, index) {
+	for _, uchar := range runeIndex.Find(words) {
 		if uchar > 0xFFFF {
 			format = "U+%5X %c \t%s\n"
 		}
-		fmt.Printf(format, uchar, uchar, index.Names[uchar])
+		fmt.Printf(format, uchar, uchar, runeIndex.Name(uchar))
 		count++
 	}
 	fmt.Printf("%d characters found\n", count)

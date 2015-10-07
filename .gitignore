@@ -2,7 +2,7 @@ UnicodeData.txt
 charfinder_index.pickle
 __pycache__/
 *.gob
-
+runefinder3
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
